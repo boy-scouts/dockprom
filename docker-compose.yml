@@ -76,10 +76,11 @@ services:
       org.label-schema.group: "monitoring"
 
   nginxexporter:
-    image: fish/nginx-exporter
+    image: nginx/nginx-prometheus-exporter:latest
     container_name: nginxexporter
     command:
-    - '-nginx.scrape_uri=https://ninjaserver.online/nginx_status'
+      - '-nginx.plus'
+      - '-nginx.scrape-uri=https://foxserver.dev'
     restart: unless-stopped
     networks:
       - monitor-net
