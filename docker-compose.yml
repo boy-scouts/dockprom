@@ -79,7 +79,7 @@ services:
     image: fish/nginx-exporter
     container_name: nginxexporter
     command:
-      - '-nginx.scrape_uri=http://127.0.0.1/nginx_status/'
+      - '-nginx.scrape_uri=https://foxserver.dev/nginx_status/'
     restart: unless-stopped
     networks:
       - monitor-net
