@@ -130,6 +130,9 @@ services:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_RENDERING_SERVER_URL=http://image_renderer:8081/render
+      - GF_RENDERING_CALLBACK_URL=http://grafana:3000/
+      - GF_LOG_FILTERS=rendering:debug
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -140,35 +143,16 @@ services:
     labels:
       org.label-schema.group: "monitoring"
 
-#  pushgateway:
-#    image: prom/pushgateway:v1.4.1
-#    container_name: pushgateway
-#    restart: unless-stopped
-#    ports:
-#      - 9091:9091
-#    expose:
-#      - 9091
-#    networks:
-#      - monitor-net
-#    labels:
-#      org.label-schema.group: "monitoring"
-#
-#  caddy:
-#    image: caddy:2.3.0
-#    container_name: caddy
-#    ports:
-#      - "3000:3000"
-#      - "9090:9090"
-#      - "9093:9093"
-#      - "9091:9091"
-#    volumes:
-#      - ./caddy:/etc/caddy
-#    environment:
-#      - ADMIN_USER=${ADMIN_USER:-admin}
-#      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
-#      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH:-JDJhJDE0JE91S1FrN0Z0VEsyWmhrQVpON1VzdHVLSDkyWHdsN0xNbEZYdnNIZm1pb2d1blg4Y09mL0ZP}
-#    restart: unless-stopped
-#    networks:
-#      - monitor-net
-#    labels:
-#      org.label-schema.group: "monitoring"
+  image_renderer:
+    container_name: image_renderer
+    image: grafana/grafana-image-renderer:latest
+    restart: unless-stopped
+    expose:
+      - "8081"
+    networks:
+      - monitor-net
+    environment:
+      ENABLE_METRICS: 'true'
+    labels:
+      org.label-schema.group: "monitoring"
+
